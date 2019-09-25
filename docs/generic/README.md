@@ -8,7 +8,7 @@
   </a>
 </p>
 
-> 一款功能强大的安全评估工具  🏠[主页](https://chaitin.github.io/xray/#/)  ⬇️[下载](https://github.com/chaitin/xray/releases) 📚[English Document](https://github.com/chaitin/xray/tree/master/docs/en-us/generic)
+> 一款功能强大的安全评估工具  🏠[使用指南](https://chaitin.github.io/xray/#/)  ⬇️[下载](https://github.com/chaitin/xray/releases) 📚[English Document](https://github.com/chaitin/xray/tree/master/docs/en-us/generic)
 
 ### ✨ Demo
 
@@ -16,25 +16,27 @@
 
 ## 🚀 快速使用
 
-1. 扫描单个 url
+**在使用之前，请务必阅读并同意 [License](https://github.com/chaitin/xray/blob/master/LICENSE.md) 文件中的条款，否则请勿安装使用本工具。**
+
+1. 使用基础爬虫爬取并对爬虫爬取的链接进行漏洞扫描
     
     ```bash
-    xray webscan --url "http://example.com/?a=b"
+    xray webscan --basic-crawler http://example.com --html-output vuln.html
     ```
 
 1. 使用 HTTP 代理进行被动扫描
     
     ```bash
-    xray webscan --listen 127.0.0.1:7777
+    xray webscan --listen 127.0.0.1:7777 --html-output proxy.html
     ```
    设置浏览器 http 代理为 `http://127.0.0.1:7777`，就可以自动分析代理流量并扫描。
    
    >如需扫描 https 流量，请阅读下方文档 `抓取 https 流量` 部分
 
-1. 使用基础爬虫爬取并扫描整个网站
+1. 只扫描单个 url，不使用爬虫
     
     ```bash
-    xray webscan --basic-crawler http://example.com
+    xray webscan --url http://example.com/?a=b --html-output single-url.html
     ```
 
 1. 手动指定本次运行的插件
@@ -51,8 +53,8 @@
     可以指定将本次扫描的漏洞信息输出到某个文件中:
     
     ```bash
-    xray webscan --url http://example.com/?a=b --text-output result.txt
-    xray webscan --url http://example.com/?a=b --json-output result.json
+    xray webscan --url http://example.com/?a=b \
+    --text-output result.txt --json-output result.json --html-output report.html
     ```
     
     [报告样例](https://chaitin.github.io/xray/assets/report_example.html)
@@ -71,8 +73,30 @@
     ```bash
     xray webscan --plugins phantasm --poc /home/test/1.yaml --url http://example.com/
     ```
+    
+    `--poc` 参数非常灵活，支持 Glob 匹配，支持从目录加载，可以从以下几个例子理解用法:
+    
+    加载 `/home/test/pocs/` 所有的 POC:
+    ```bash
+    xray webscan --plugins phantasm --poc "/home/test/pocs/*"
+    ```
+    
+    加载 `/home/test/pocs/` 下包含 thinkphp 的 POC
+    ```bash
+    xray webscan --plugins phantasm --poc "/home/test/pocs/*thinkphp*"
+    ```
+    
     自定义 POC 请查看文档。
   
+1. 转发漏洞信息到数据库、邮件、IM 通知等
+
+   用户可以使用 `--webhook-output` 将漏洞信息进行转发，后端需要返回 status 200 才认为发送成功，否则将打印错误日志。
+
+
+   ```bash
+   xray webscan --url http://example.com/ --webhook-output http://host:port/path
+   ```
+
 
 ## 🛠 检测模块
 
@@ -148,6 +172,9 @@
  - 反连平台的使用
  - ...
 
+## 贡献 POC
+
+参照: [https://chaitin.github.io/xray/#/guide/contribute](https://chaitin.github.io/xray/#/guide/contribute)
 
 ## 📝 讨论区
 
@@ -159,4 +186,6 @@
 1. QQ 群: 717365081
 1. 微信群: 扫描以下二维码加我的个人微信，会把大家拉到 `xray` 官方微信群    
 
-<img src="https://chaitin.github.io/xray/assets/wechat.jpg" height="150px">
+<img src="https://chaitin.github.io/xray/assets/wechat.jpg?_=1" height="200px">
+
+
